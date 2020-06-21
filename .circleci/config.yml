@@ -1,13 +1,39 @@
+gcloud-sdk: &gcloud-sdk
+  docker:
+  - image: google/cloud-sdk
+  working_directory: ~
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
-version: 2.1
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+version: 2
+jobs:
+  build:
+    <<: *gcloud-sdk
+    steps:
+    - run:
+        name: Authentication gcp
+        command: |
+          if [ "$CIRCLE_BRANCH" == "master" ]; then
+            echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+            echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
+            ls -al ~
+            gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
+          fi
+    - run:
+        name: build
+        command: |
+          echo "gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command='ls'""
+          gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build and deploy:
     jobs:
-      - welcome/run
+    - approve:
+        type: approval
+        filters:
+          branches:
+            only: /master/
+    - build:
+        requires:
+        - approve
+        filters:
+          branches:
+            only: /master/

@@ -1,12 +1,14 @@
 gcloud-sdk: &gcloud-sdk
   docker:
-  - image: google/cloud-sdk
+    - image: google/cloud-sdk
   working_directory: ~
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2
 jobs:
   build:
-    <<: *gcloud-sdk
+    docker:
+      - image: google/cloud-sdk
+    working_directory: ~
     steps:
       - checkout
       - run:
@@ -14,7 +16,10 @@ jobs:
         command: |  
           ls ~/project/
   deploy:
-    <<: *gcloud-sdk
+    docker:
+      - image: google/cloud-sdk
+    working_directory: ~
+    steps:
       - run:
           name: Authentication gcp
           command: |
@@ -33,16 +38,17 @@ workflows:
   version: 2
   build and deploy:
     jobs:
-    - build:
-    - approve:
-        type: approval
-        filters:
-          branches:
-            only: /master/
-    - build:
-        requires:
-        - build
-        - approve
-        filters:
-          branches:
-            only: /master/
+      - build:
+      - approve:
+          type: approval
+          filters:
+            branches:
+              only: /master/
+      - build:
+          requires:
+          - build
+          - approve
+          filters:
+            branches:
+              only: /master/
+  

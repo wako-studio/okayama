@@ -1,29 +1,23 @@
 <?php
 /**
- * Cocoon WordPress Theme
- * @author: yhira
- * @link: https://wp-cocoon.com/
- * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
+ * The template for displaying 404 pages (Not Found).
+ *
+ * @package ThinkUpThemes
  */
-if ( !defined( 'ABSPATH' ) ) exit; ?>
-<?php get_header(); ?>
 
-<article class="post article">
-  <!--ループ開始-->
-  <h1 class="entry-title"><?php echo get_404_page_title(); ?></h1>
-  <?php if ( get_404_image_url() ): ?>
-    <img class="not-found" src="<?php echo get_404_image_url(); ?>" alt="404 Not Found" />
-  <?php else: ?>
-    <img class="not-found" src="<?php echo get_template_directory_uri() ?>/images/404.png" alt="404 Not Found" />
-  <?php endif ?>
+get_header(); ?>
 
-  <?php echo wpautop(get_404_page_message()); ?>
+	<div class="entry-content title-404">
 
-  <?php //404ページウィジェット
-  if ( is_active_sidebar( '404-page' ) ): ?>
-    <?php dynamic_sidebar( '404-page' ); ?>
-  <?php endif; ?>
+		<h2><i class="fa fa-ban"></i><?php esc_html_e( '404', 'renden' ); ?></h2>
+		<p>
+		<?php esc_html_e( 'Sorry, we could not find the page you are looking for.', 'renden' ); ?>
+		<br/>
+		<?php esc_html_e( 'Please try using the search function.', 'renden' ); ?>
+		</p>
 
-</article>
-<!-- END div.post -->
+		<?php get_search_form(); ?>
+	
+	</div>
+
 <?php get_footer(); ?>

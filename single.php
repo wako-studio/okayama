@@ -1,20 +1,22 @@
-<?php //通常ページとAMPページの切り分け
+<?php
 /**
- * Cocoon WordPress Theme
- * @author: yhira
- * @link: https://wp-cocoon.com/
- * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
+ * The Template for displaying all single posts.
+ *
+ * @package ThinkUpThemes
  */
-if ( !defined( 'ABSPATH' ) ) exit;
 
-if (!is_amp()) {
-   get_header();
- } else {
-   get_template_part('tmp/amp-header');
- }
-?>
+get_header(); ?>
 
-<?php //投稿ページ内容
-get_template_part('tmp/single-contents'); ?>
+			<?php while ( have_posts() ) : the_post(); ?>
+
+				<?php get_template_part( 'content', 'single' ); ?>
+
+				<?php wp_link_pages( array( 'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'renden' ), 'after'  => '</div>', ) ); ?>
+
+				<?php thinkup_input_nav( 'nav-below' ); ?>
+
+				<?php /* Add comments */ thinkup_input_allowcomments(); ?>
+
+			<?php endwhile; wp_reset_postdata(); ?>
 
 <?php get_footer(); ?>

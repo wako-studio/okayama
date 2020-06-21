@@ -1,24 +1,50 @@
 <?php
 /**
- * Cocoon WordPress Theme
- * @author: yhira
- * @link: https://wp-cocoon.com/
- * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
+ * The main template file.
+ *
+ * @package ThinkUpThemes
  */
-if ( !defined( 'ABSPATH' ) ) exit; ?>
-<?php get_header(); ?>
 
-<?php
-////////////////////////////
-//一覧表示
-///////////////////////
-if (!is_user_agent_live_writer()) {
-  //通常表示
-  get_template_part('tmp/list');
-} else {
-  //ブログエディターLive Writerでテーマ取得の際
-  get_template_part('tmp/live-writer');
-}
-?>
+get_header(); ?>
 
-<?php get_footer(); ?>
+			<?php if( have_posts() ): ?>
+
+				<div id="container">
+
+				<?php while( have_posts() ): the_post(); ?>
+
+					<div class="blog-grid element<?php thinkup_input_stylelayout(); ?>">
+
+					<article id="post-<?php the_ID(); ?>" <?php post_class('blog-article'); ?>>
+
+						<header class="entry-header<?php thinkup_input_stylelayout_class1(); ?>">
+
+							<?php thinkup_input_blogimage(); ?>
+
+						</header>
+
+						<div class="entry-content<?php thinkup_input_stylelayout_class2(); ?><?php thinkup_input_blogcommentclass(); ?>">
+
+							<?php thinkup_input_blogtitle(); ?>
+							<?php thinkup_input_blogmeta(); ?>
+							<?php thinkup_input_blogtext(); ?>
+
+						</div><div class="clearboth"></div>
+
+					</article><!-- #post-<?php get_the_ID(); ?> -->
+
+					</div>
+
+				<?php endwhile; ?>
+
+				</div><div class="clearboth"></div>
+
+				<?php the_posts_pagination(); ?>
+
+			<?php else: ?>
+
+				<?php get_template_part( 'no-results', 'archive' ); ?>		
+
+			<?php endif; wp_reset_postdata(); ?>
+
+<?php get_footer() ?>

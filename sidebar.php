@@ -1,36 +1,27 @@
 <?php
 /**
- * Cocoon WordPress Theme
- * @author: yhira
- * @link: https://wp-cocoon.com/
- * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
+ * The Sidebar containing the main widget areas.
+ *
+ * @package ThinkUpThemes
  */
-if ( !defined( 'ABSPATH' ) ) exit;
+?>
 
-if ( is_active_sidebar( 'sidebar' ) ) : ?>
-<div id="sidebar" class="sidebar nwa cf" role="complementary">
+		<div id="sidebar">
+		<div id="sidebar-core">
 
-  <?php //サイドバー上の広告表示
-  if (is_ad_pos_sidebar_top_visible() && is_all_adsenses_visible()){
-    get_template_part_with_ad_format(get_ad_pos_sidebar_top_format(), 'ad-sidebar-top', is_ad_pos_sidebar_top_label_visible());
-  }; ?>
+			<?php do_action( 'before_sidebar' ); ?>
+			<?php if ( ! dynamic_sidebar( thinkup_input_sidebars() ) and current_user_can( 'edit_theme_options' ) ) : ?>
 
-	<?php dynamic_sidebar( 'sidebar' ); ?>
+				<aside class="widget widget_text">
+					<h3 class="widget-title"><?php esc_html_e( 'Please Add Widgets', 'renden' ); ?></h3>
+					<div class="textwidget"><div class="error-icon">
+						<p><?php esc_html_e( 'Remove this message by adding widgets to the Sidebar from the Widgets section of the WordPress admin area.', 'renden' ); ?></p>
+						<a href="<?php echo esc_url( admin_url( 'widgets.php' ) ); ?>" title="<?php esc_attr_e( 'No Widgets Selected', 'renden' ); ?>"><?php esc_html_e( 'Click here to go to Widget area.', 'renden' ); ?></a>
+					</div></div>
+				</aside>
 
-  <?php //サイドバー下の広告表示
-  if (is_ad_pos_sidebar_bottom_visible() && is_all_adsenses_visible()){
-    get_template_part_with_ad_format(get_ad_pos_sidebar_bottom_format(), 'ad-sidebar-bottom', is_ad_pos_sidebar_bottom_label_visible());
-  }; ?>
+			<?php endif; ?>
 
-  <?php
-  ////////////////////////////
-  //サイドバー追従領域
-  ////////////////////////////
-  if ( is_active_sidebar( 'sidebar-scroll' ) ) : ?>
-  <div id="sidebar-scroll" class="sidebar-scroll">
-    <?php dynamic_sidebar( 'sidebar-scroll' ); ?>
-  </div>
-  <?php endif; ?>
-
-</div>
-<?php endif; ?>
+		</div>
+		</div><!-- #sidebar -->
+				

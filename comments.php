@@ -1,91 +1,93 @@
-<?php //コメントエリア
+<?php
 /**
- * Cocoon WordPress Theme
- * @author: yhira
- * @link: https://wp-cocoon.com/
- * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
+ * The template for displaying Comments.
+ *
+ * @package ThinkUpThemes
  */
-if ( !defined( 'ABSPATH' ) ) exit;
+?>
 
-if ( is_comment_allow() || have_comments() ): ?>
-<!-- comment area -->
-<div id="comment-area" class="comment-area<?php echo get_additional_comment_area_classes(); ?>">
-  <section class="comment-list">
-    <h2 id="comments" class="comment-title">
-      <?php echo get_comment_heading(); ?>
-      <?php if (get_comment_sub_heading()): ?>
-        <span class="comment-sub-heading sub-caption"><?php echo get_comment_sub_heading(); ?></span>
-      <?php endif ?>
-    </h2>
+<?php
+	/* Exit if the post is password protected & user is not logged in */
+	if ( post_password_required() )
+		return;
+?>
 
-    <?php
-    if(have_comments()): // コメントがあったら
-    ?>
-        <ol class="commets-list">
-        <?php
-        $args = get_wp_list_comments_args();
-        wp_list_comments($args); //コメント一覧を表示 ?>
-        </ol>
+	<div id="comments">
+	<div id="comments-core" class="comments-area">
 
-        <div class="comment-page-link">
-          <?php paginate_comments_links(); //コメントが多い場合、ページャーを表示 ?>
-        </div>
-    <?php
-    endif; ?>
-  </section>
-  <?php
+	<?php if ( have_comments() ) : ?>
 
-  ///////////////////////////////////////////
-  // ここからコメントフォーム
-  ///////////////////////////////////////////
-  // メールアドレスが公開されることはありません。
-  $req = get_option( 'require_name_email' );
-  $required_text = sprintf( ' ' . __( 'Required fields are marked %s' ), '<span class="required">*</span>' );
-  //コメント案内メッセージ
-  $comment_info_msg = get_comment_information_message();
-  $comment_info_msg_tag = null;
-  if ($comment_info_msg) {
-    $comment_info_msg_tag = '<div class="comment-information-messag">'.$comment_info_msg.'</div>';
-  }
-  //コメントフォームの引数
-  $post_id = get_the_ID();
-  $user = wp_get_current_user();
-  $user_identity = $user->exists() ? $user->display_name : '';
-  $args = array(
-    'title_reply'  => get_comment_form_heading(),
-    'label_submit' => get_comment_submit_label(),
-    'logged_in_as' => '<p class="logged-in-as">' . sprintf(
-      /* translators: 1: edit user link, 2: accessibility text, 3: user name, 4: logout URL */
-      __( '<a href="%1$s" aria-label="%2$s">Logged in as %3$s</a>. <a href="%4$s">Log out?</a>' ),
-      get_edit_user_link(),
-      /* translators: %s: user name */
-      esc_attr( sprintf( __( 'Logged in as %s. Edit your profile.' ), $user_identity ) ),
-      $user_identity,
-      wp_logout_url( apply_filters( 'the_permalink', get_permalink( $post_id ), $post_id ) )
-    ) . '</p>'.$comment_info_msg_tag,
-    'comment_notes_before' => '<p class="comment-notes"><span id="email-notes">' . __( 'Your email address will not be published.' ) . '</span>'. ( $req ? $required_text : '' ) . '</p>'.$comment_info_msg_tag,
-  );
-  echo '<aside class="comment-form">';
-  if (is_comment_open()) {
-    if (!is_amp()) {
-      if (is_comment_form_display_type_toggle_button()) {?>
-        <button id="comment-reply-btn" class="comment-btn key-btn"><?php _e( 'コメントを書き込む', THEME_NAME ) ?></button>
-      <?php }
-      //通常ページ
-      comment_form($args);
-    } else {
-      //AMPページ?>
-      <h3 id="reply-title" class="comment-reply-title"><?php echo get_comment_form_heading(); ?></h3>
-      <a class="comment-btn" href="<?php echo get_permalink().'#comment-area'; ?>"><?php _e( 'コメントを書き込む', THEME_NAME ) ?></a>
-      <?php
-    }
-  }
+		<div id="comments-title">
+			<h3>
+				<?php
+					printf( _n( 'Comments <span>(%1$s)</span> ', 'Comments <span>(%1$s)</span>', get_comments_number(), 'renden' ),
+						number_format_i18n( get_comments_number() ) );
+				?>
+			</h3>
+			<span class="sep"><span class="sep-core"></span></span>
+		</div>
 
+		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+		<nav role="navigation" id="comment-nav-above" class="comment-navigation">
+			<div class="nav-previous"><?php previous_comments_link( __( 'Older Comments', 'renden' ) ); ?></div>
+			<div class="nav-next"><?php next_comments_link( __( 'Newer Comments', 'renden' ) ); ?></div>
+			<div class="clearboth"></div>			
+		</nav><!-- #comment-nav-before .comment-navigation -->
+		<?php endif;?>
 
+			<ol class="commentlist">
+				<?php /* List Comments */ thinkup_input_comments(); ?>
+			</ol><!-- .commentlist -->
 
-  echo '</aside>';
+		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+		<nav role="navigation" id="comment-nav-below" class="comment-navigation">
+			<div class="nav-previous"><?php previous_comments_link( __( 'Older Comments', 'renden' ) ); ?></div>
+			<div class="nav-next"><?php next_comments_link( __( 'Newer Comments', 'renden' ) ); ?></div>
+			<div class="clearboth"></div>
+		</nav><!-- #comment-nav-below .comment-navigation -->
+		<?php endif; ?>
 
-  ?>
-</div><!-- /.comment area -->
-<?php endif ?>
+	<?php endif; ?>
 
+	<?php
+		/* Message to display when comments are closed */
+		if ( ! comments_open() && '0' != get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) :
+	?>
+
+		<div id="nocomments" class="notification info">
+			<div class="icon"><?php _e( 'Comments are closed.', 'renden' ); ?></div>
+		</div>
+
+	<?php endif; ?>
+
+	<?php 
+		$req      = get_option( 'require_name_email' );
+		$aria_req = ( $req ? " aria-required='true'" : '' );
+
+		$comments_args = array(
+			'label_submit' => __( 'Submit Now', 'renden' ),
+			'title_reply'  => __( 'Leave a comment', 'renden'  ),
+			'comment_notes_after' => '',
+			'comment_field' =>  
+				'<p class="comment-form-comment">' .
+				'<textarea id="comment" name="comment" placeholder="' . esc_attr__( 'Your Message', 'renden' ) . '" cols="45" rows="8" aria-required="true">' .
+				'</textarea></p>',
+			'fields' => apply_filters( 'comment_form_default_fields', array (
+				'author' =>
+					'<p class="comment-form-author one_third">' .
+					'<input id="author" name="author" placeholder="' . esc_attr__( 'Your Name (Required)', 'renden' ) . '" type="text" value="' . esc_attr( $commenter['comment_author'] ) .
+					'" size="30" /></p>',
+				'email' =>
+					'<p class="comment-form-email one_third">' .
+					'<input id="email" name="email" placeholder="' . esc_attr__( 'Your Email (Required)', 'renden' ) . '" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) .
+					'" size="30" /></p>',
+				'url' =>
+					'<p class="comment-form-url one_third last">' .
+					'<input id="url" name="url" placeholder="' . esc_attr__( 'Your Website', 'renden' ). '" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) .
+					'" size="30" /></p>'
+			) ),
+		);
+		comment_form( $comments_args );
+	?>
+</div>
+</div><div class="clearboth"></div><!-- #comments .comments-area -->

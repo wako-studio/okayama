@@ -8,27 +8,27 @@ jobs:
   build:
     <<: *gcloud-sdk
     steps:
-    - checkout
-    - run:
-      name: check code
-      command: |  
-        ls ~/project/
+      - checkout
+      - run:
+        name: check code
+        command: |  
+          ls ~/project/
   deploy:
     <<: *gcloud-sdk
-    - run:
-        name: Authentication gcp
-        command: |
-          if [ "$CIRCLE_BRANCH" == "master" ]; then
-            echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
-            echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
-            ls -al ~
-            gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
-          fi
-    - run:
-        name: build
-        command: |
-          echo "gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command='ls'""
-          gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
+      - run:
+          name: Authentication gcp
+          command: |
+            if [ "$CIRCLE_BRANCH" == "master" ]; then
+              echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+              echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
+              ls -al ~
+              gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
+            fi
+      - run:
+          name: build
+          command: |
+            echo "gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command='ls'""
+            gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
 workflows:
   version: 2
   build and deploy:

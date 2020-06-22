@@ -8,14 +8,12 @@ jobs:
       - run:
           name: Authentication gcp
           command: |
-            if [ "$CIRCLE_BRANCH" == "master" || "$CIRCLE_BRANCH" == "for_circleci" ]; then
-              echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
-              echo ${DEV_GCLOUD_SERVICE_KEY} > ~/project/auth/credentials.json
-              echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
-              echo ${DEV_SSH_PRIVATE_KEY} >> ~/.ssh/google_compute_engine
-              echo ${DEV_SSH_PUBLIC_KEY} >> ~/.ssh/google_compute_engine.pub
-              gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
-            fi
+            echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+            echo ${DEV_GCLOUD_SERVICE_KEY} > ~/project/auth/credentials.json
+            echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
+            echo ${DEV_SSH_PRIVATE_KEY} >> ~/.ssh/google_compute_engine
+            echo ${DEV_SSH_PUBLIC_KEY} >> ~/.ssh/google_compute_engine.pub
+            gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
             gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
 workflows:
   version: 2

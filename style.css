@@ -1013,7 +1013,7 @@ li.pag-next {
 }
 #header .header-links > ul > li a,
 #header-sticky .header-links > ul > li a {
-	font-size: 16px;
+	font-size: 14px;
 	color: #232323;
 	padding: 38px 11px;
 }
@@ -2139,7 +2139,7 @@ li.pag-next {
 /* Breadcrumbs */
 #intro #breadcrumbs {
 	color: #232323;
-	font-size: 16px;
+	font-size: 14px;
 	text-align: right;
 	display: table-cell;
 	vertical-align: middle;

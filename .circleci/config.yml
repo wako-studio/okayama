@@ -17,7 +17,7 @@ jobs:
           name: run deploy
           command: |
             gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/tmp; if [ -d 'okayama' ];then echo directory had been created; else sudo git clone https://${GITHUB_ACCESS_TOKEN}:x-oauth-basic@github.com/wako-studio/okayama.git; fi"
-            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/tmp/okayama; git checkout master; git pull"
+            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/tmp/okayama; sudo git checkout master; sudo git pull"
             
 workflows:
   version: 2

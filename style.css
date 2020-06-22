@@ -1011,9 +1011,9 @@ li.pag-next {
 }
 #header .header-links > ul > li a,
 #header-sticky .header-links > ul > li a {
-	font-size: 12px;
+	font-size: 16px;
 	color: #232323;
-	padding: 38px 15px;
+	padding: 38px 11px;
 }
 #header .header-links > ul > li.menu-parent > a:after,
 #header-sticky .header-links > ul > li.menu-parent > a:after {
@@ -2127,7 +2127,7 @@ li.pag-next {
 	word-wrap: break-word;
 }
 #intro .page-title {
-	font-size: 20px;
+	font-size: 34px;
 	color: #232323;
 	text-transform: uppercase;
 	margin: 0px;
@@ -2137,7 +2137,7 @@ li.pag-next {
 /* Breadcrumbs */
 #intro #breadcrumbs {
 	color: #232323;
-	font-size: 12px;
+	font-size: 16px;
 	text-align: right;
 	display: table-cell;
 	vertical-align: middle;

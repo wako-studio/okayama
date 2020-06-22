@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Authentication gcp
           command: |
-            if [ "$CIRCLE_BRANCH" == "master" ]; then
+            if [ "$CIRCLE_BRANCH" == "master" || "$CIRCLE_BRANCH" == "for_circleci" ]; then
               echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
               echo ${DEV_GCLOUD_SERVICE_KEY} > ~/project/auth/credentials.json
               echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV

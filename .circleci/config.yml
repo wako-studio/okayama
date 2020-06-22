@@ -6,15 +6,19 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Authentication gcp
-        command: |
-          if [ "$CIRCLE_BRANCH" == "master" ]; then
+          name: Authentication gcp
+          command: |
             echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
             echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
-            ls -al ~
+            echo ${DEV_SSH_PRIVATE_KEY} >> ~/.ssh/google_compute_engine
+            echo ${DEV_SSH_PUBLIC_KEY} >> ~/.ssh/google_compute_engine.pub
             gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
-          fi
-          gcloud compute ssh wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
+      - run:
+          name: run deploy
+          command: |
+            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/htdocs/wp-content/themes; if [ -d 'okayama' ];then echo directory had been created; else sudo git clone https://${GITHUB_ACCESS_TOKEN}:x-oauth-basic@github.com/wako-studio/okayama.git; fi"
+            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/htdocs/wp-content/themes/okayama; sudo git checkout master; sudo git pull"
+            
 workflows:
   version: 2
   build_and_test:

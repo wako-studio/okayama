@@ -10,6 +10,7 @@ jobs:
           command: |
             if [ "$CIRCLE_BRANCH" == "master" ]; then
               echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+              echo ${DEV_GCLOUD_SERVICE_KEY} > ~/project/auth/credentials.json
               echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
               echo ${DEV_SSH_PRIVATE_KEY} >> ~/.ssh/google_compute_engine
               echo ${DEV_SSH_PUBLIC_KEY} >> ~/.ssh/google_compute_engine.pub

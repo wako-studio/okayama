@@ -9,15 +9,16 @@ jobs:
           name: Authentication gcp
           command: |
             echo ${DEV_GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
-            echo 1
             echo "export GCLOUD_PROJECT_ID=${DEV_GCLOUD_PROJECT_ID}" >> $BASH_ENV
-            echo 2
             echo ${DEV_SSH_PRIVATE_KEY} >> ~/.ssh/google_compute_engine
             echo ${DEV_SSH_PUBLIC_KEY} >> ~/.ssh/google_compute_engine.pub
-            echo 3
             gcloud --quiet config set project ${DEV_GCLOUD_PROJECT_ID}
-            echo 4
-            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="ls ~/apps/wordpress/htdocs/wp-content/themes"
+      - run:
+          name: run deploy
+          command: |
+            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/tmp; if [ -d 'okayama' ];then git clone https://${GITHUB_ACCESS_TOKEN}:x-oauth-basic@github.com/wako-studio/okayama.git; else echo directory had been created; fi"
+            gcloud compute ssh deploy@wp-dev-01-vm --zone=us-east1-d --command="cd /opt/bitnami/apps/wordpress/tmp/okayama; git checkout master; git pull"
+            
 workflows:
   version: 2
   build_and_test:
